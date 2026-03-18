@@ -68,17 +68,34 @@ document.getElementById('vacation-toggle').addEventListener('click', () => {
 
 // --- 3. TEST COMMAND ---
 // You can run addLP(50, 'focus') in the browser console to see it work!
-// --- 4. QUEST MODAL LOGIC ---
+// --- 4. NAVIGATION & MODAL LOGIC ---
 
-const questBtn = document.getElementById('quest-btn'); // Much more reliable!
+// Get the buttons by ID (Make sure these IDs are in your HTML!)
+const questBtn = document.getElementById('quest-btn'); 
+const focusBtn = document.getElementById('focus-btn');
 const modal = document.getElementById('quest-modal');
-const questBtn = document.querySelector('.nav-btn:nth-child(2)'); // The "Quests" button
 const closeModal = document.getElementById('close-modal');
 const saveQuest = document.getElementById('save-quest');
 
-// Open the popup when clicking "Quests"
-questBtn.onclick = function() {
-    modal.style.display = "flex";
+// Open the Quest popup
+if (questBtn) {
+    questBtn.onclick = function() {
+        modal.style.display = "flex";
+    }
+}
+
+// Focus Mode Logic (Switching the view)
+if (focusBtn) {
+    focusBtn.onclick = function() {
+        // This hides the character and shows the timer (we'll build the timer next)
+        const charSpace = document.querySelector('.character-space');
+        charSpace.innerHTML = `
+            <div class="timer-display">
+                <h2 id="timer">25:00</h2>
+                <button id="start-focus" class="badge">Start Focus</button>
+            </div>
+        `;
+    }
 }
 
 // Close the popup when clicking "Cancel"
@@ -96,23 +113,7 @@ saveQuest.onclick = function() {
         return;
     }
 
-    // Give 50 LP for a custom task
     addLP(50, vibe);
-
-    // Reset and Close
     document.getElementById('quest-name').value = "";
     modal.style.display = "none";
-    
-    alert(`Quest Added: ${name}! +50 LP to ${vibe}`);
 }
-
-// Close popup if user clicks outside the white box
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-const focusBtn = document.querySelector('.nav-btn:nth-child(3)');
-focusBtn.onclick = function() {
-    alert("Focus Mode coming soon! Get ready to earn 1 LP per minute.");
-};
