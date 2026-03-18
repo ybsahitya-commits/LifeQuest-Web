@@ -112,3 +112,7 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+const focusBtn = document.querySelector('.nav-btn:nth-child(3)');
+focusBtn.onclick = function() {
+    alert("Focus Mode coming soon! Get ready to earn 1 LP per minute.");
+};
