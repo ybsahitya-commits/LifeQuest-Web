@@ -5,148 +5,109 @@
     --lp-color: #A2D2FF;
 }
 
-body {
-    background-color: var(--bg-color);
-    font-family: 'Inter', -apple-system, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+body, html {
     margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Prevents the whole browser from scrolling */
+    font-family: 'Inter', sans-serif;
+    background-color: #eee; /* Background behind the phone "shell" */
 }
 
 .app-container {
-    width: 375px; /* Mobile width */
+    width: 375px;
     height: 667px;
     background: white;
+    margin: 20px auto;
     border-radius: 40px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
     display: flex;
-    flex-direction: column;
-    padding: 20px;
+    flex-direction: column; /* Stack: Content on top, Nav on bottom */
     position: relative;
-    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
 }
 
-header {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+/* --- THE SCROLLING AREA --- */
+#home-view, #quests-view {
+    flex: 1; /* Takes up all available space */
+    overflow-y: auto; /* Allows scrolling inside this area only */
+    padding: 25px;
+    padding-bottom: 100px; /* Space so content isn't hidden by Nav */
 }
 
-.user-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 700;
-    font-size: 1.2rem;
+/* Hide scrollbar for a cleaner look */
+#home-view::-webkit-scrollbar, #quests-view::-webkit-scrollbar {
+    display: none;
 }
 
-.badge {
-    background: var(--accent-lavender);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    color: white;
-}
-
-.lp-bar-bg {
-    background: #eee;
-    height: 12px;
-    border-radius: 6px;
-    width: 100%;
-    margin-top: 5px;
-}
-
-#lp-bar-fill {
-    background: var(--lp-color);
-    height: 100%;
-    border-radius: 6px;
-    transition: width 0.5s ease;
-}
-
-.character-space {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
+/* --- THE STICKY BOTTOM NAV --- */
 .bottom-nav {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px); /* Modern blurry glass effect */
     display: flex;
     justify-content: space-around;
-    padding: 20px 0;
-    border-top: 1px solid #eee;
-}
-
-.nav-btn {
-    border: none;
-    background: none;
-    font-weight: 600;
-    color: #888;
-    cursor: pointer;
-}
-
-.nav-btn.active {
-    color: var(--accent-lavender);
-}
-.modal {
-    display: none; /* Hidden by default */
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.4);
-    justify-content: center;
     align-items: center;
-    z-index: 10;
+    border-top: 1px solid #eee;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
 }
 
-.modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 25px;
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-input, select {
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-}
-
-#save-quest {
-    background: var(--accent-lavender);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: bold;
-}
-.view-title { font-size: 2rem; margin: 10px 0 5px 0; color: var(--text-main); }
-.section-subtitle { font-weight: bold; color: #888; margin-bottom: 20px; }
-
+/* --- QUEST CARDS & INLINE INPUT --- */
 .category-card {
     background: #fff;
-    border: 2px solid #f0f0f0;
+    border: 2px solid #f8f8f8;
     border-radius: 20px;
     padding: 15px;
     margin-bottom: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
 
-.category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.category-name { font-weight: bold; text-transform: capitalize; color: var(--text-main); }
-
-.add-task-btn {
-    background: none; border: none; color: var(--accent-lavender);
-    font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;
+.inline-input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #eee;
+    padding: 8px 0;
+    margin-top: 10px;
+    outline: none;
 }
 
-.task-item { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
-.task-dot { width: 12px; height: 12px; border: 2px solid var(--accent-lavender); border-radius: 50%; cursor: pointer; }
+.task-dot {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--accent-lavender);
+    border-radius: 50%;
+    cursor: pointer;
+    flex-shrink: 0;
+}
 
-/* Navigation Colors */
-.nav-btn.active-tab { color: #CDB4DB !important; } /* Purple */
-.nav-btn { color: #888; } /* Same as focus */
+.task-dot.filled {
+    background-color: var(--accent-lavender);
+}
+
+/* --- THE PERFECT CIRCLE PLUS --- */
+.plus-circle {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--accent-lavender);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.clear-btn {
+    width: 100%;
+    padding: 10px;
+    background: #fff0f0;
+    color: #ff5c5c;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    margin: 10px 0 20px 0;
+    cursor: pointer;
+}
