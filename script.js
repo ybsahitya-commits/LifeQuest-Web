@@ -70,6 +70,7 @@ document.getElementById('vacation-toggle').addEventListener('click', () => {
 // You can run addLP(50, 'focus') in the browser console to see it work!
 // --- 4. QUEST MODAL LOGIC ---
 
+const questBtn = document.getElementById('quest-btn'); // Much more reliable!
 const modal = document.getElementById('quest-modal');
 const questBtn = document.querySelector('.nav-btn:nth-child(2)'); // The "Quests" button
 const closeModal = document.getElementById('close-modal');
