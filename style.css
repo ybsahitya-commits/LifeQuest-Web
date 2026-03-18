@@ -124,3 +124,29 @@ input, select {
     border-radius: 10px;
     font-weight: bold;
 }
+.view-title { font-size: 2rem; margin: 10px 0 5px 0; color: var(--text-main); }
+.section-subtitle { font-weight: bold; color: #888; margin-bottom: 20px; }
+
+.category-card {
+    background: #fff;
+    border: 2px solid #f0f0f0;
+    border-radius: 20px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.category-name { font-weight: bold; text-transform: capitalize; color: var(--text-main); }
+
+.add-task-btn {
+    background: none; border: none; color: var(--accent-lavender);
+    font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;
+}
+
+.task-item { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+.task-dot { width: 12px; height: 12px; border: 2px solid var(--accent-lavender); border-radius: 50%; cursor: pointer; }
+
+/* Navigation Colors */
+.nav-btn.active-tab { color: #CDB4DB !important; } /* Purple */
+.nav-btn { color: #888; } /* Same as focus */
