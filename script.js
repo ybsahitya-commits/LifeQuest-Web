@@ -68,52 +68,62 @@ document.getElementById('vacation-toggle').addEventListener('click', () => {
 
 // --- 3. TEST COMMAND ---
 // You can run addLP(50, 'focus') in the browser console to see it work!
-// --- 4. NAVIGATION & MODAL LOGIC ---
+const categories = ['grit', 'focus', 'energy', 'presence'];
 
-// Get the buttons by ID (Make sure these IDs are in your HTML!)
-const questBtn = document.getElementById('quest-btn'); 
-const focusBtn = document.getElementById('focus-btn');
-const modal = document.getElementById('quest-modal');
-const closeModal = document.getElementById('close-modal');
-const saveQuest = document.getElementById('save-quest');
-
-// Open the Quest popup
-if (questBtn) {
-    questBtn.onclick = function() {
-        modal.style.display = "flex";
-    }
+// --- Navigation Logic ---
+function showView(viewName) {
+    document.getElementById('home-view').style.display = viewName === 'home' ? 'block' : 'none';
+    document.getElementById('quests-view').style.display = viewName === 'quests' ? 'block' : 'none';
+    
+    // Update Nav Colors
+    document.getElementById('home-btn').classList.toggle('active-tab', viewName === 'home');
+    document.getElementById('quest-btn').classList.toggle('active-tab', viewName === 'quests');
 }
 
-// Focus Mode Logic (Switching the view)
-if (focusBtn) {
-    focusBtn.onclick = function() {
-        // This hides the character and shows the timer (we'll build the timer next)
-        const charSpace = document.querySelector('.character-space');
-        charSpace.innerHTML = `
-            <div class="timer-display">
-                <h2 id="timer">25:00</h2>
-                <button id="start-focus" class="badge">Start Focus</button>
+document.getElementById('home-btn').onclick = () => showView('home');
+document.getElementById('quest-btn').onclick = () => {
+    showView('quests');
+    renderCategories();
+};
+
+// --- Render Category Cards ---
+function renderCategories() {
+    const list = document.getElementById('category-list');
+    list.innerHTML = ''; // Clear current list
+
+    categories.forEach(cat => {
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        card.innerHTML = `
+            <div class="category-header">
+                <span class="category-name">${cat}</span>
+                <button class="add-task-btn" onclick="addNewTask('${cat}')">
+                    <span style="border: 2px solid; border-radius: 50%; width: 18px; height: 18px; display: inline-block;">+</span> 
+                    Add Task
+                </button>
             </div>
+            <div id="tasks-${cat}"></div>
         `;
-    }
+        list.appendChild(card);
+    });
 }
 
-// Close the popup when clicking "Cancel"
-closeModal.onclick = function() {
-    modal.style.display = "none";
+function addNewTask(cat) {
+    const taskName = prompt(`Enter a ${cat} task:`); // Simple for now, like Pomofocus
+    if (!taskName) return;
+
+    const taskList = document.getElementById(`tasks-${cat}`);
+    const taskDiv = document.createElement('div');
+    taskDiv.className = 'task-item';
+    taskDiv.innerHTML = `
+        <div class="task-dot" onclick="completeTask(this, '${cat}')"></div>
+        <span>${taskName}</span>
+    `;
+    taskList.appendChild(taskDiv);
 }
 
-// Save the Quest and add LP
-saveQuest.onclick = function() {
-    const name = document.getElementById('quest-name').value;
-    const vibe = document.getElementById('quest-vibe').value;
-
-    if (name === "") {
-        alert("Please enter a task name!");
-        return;
-    }
-
-    addLP(50, vibe);
-    document.getElementById('quest-name').value = "";
-    modal.style.display = "none";
+function completeTask(el, cat) {
+    el.parentElement.style.textDecoration = "line-through";
+    el.parentElement.style.opacity = "0.5";
+    addLP(50, cat); // Use your existing LP function!
 }
