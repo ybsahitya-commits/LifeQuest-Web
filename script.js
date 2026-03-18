@@ -68,3 +68,46 @@ document.getElementById('vacation-toggle').addEventListener('click', () => {
 
 // --- 3. TEST COMMAND ---
 // You can run addLP(50, 'focus') in the browser console to see it work!
+// --- 4. QUEST MODAL LOGIC ---
+
+const modal = document.getElementById('quest-modal');
+const questBtn = document.querySelector('.nav-btn:nth-child(2)'); // The "Quests" button
+const closeModal = document.getElementById('close-modal');
+const saveQuest = document.getElementById('save-quest');
+
+// Open the popup when clicking "Quests"
+questBtn.onclick = function() {
+    modal.style.display = "flex";
+}
+
+// Close the popup when clicking "Cancel"
+closeModal.onclick = function() {
+    modal.style.display = "none";
+}
+
+// Save the Quest and add LP
+saveQuest.onclick = function() {
+    const name = document.getElementById('quest-name').value;
+    const vibe = document.getElementById('quest-vibe').value;
+
+    if (name === "") {
+        alert("Please enter a task name!");
+        return;
+    }
+
+    // Give 50 LP for a custom task
+    addLP(50, vibe);
+
+    // Reset and Close
+    document.getElementById('quest-name').value = "";
+    modal.style.display = "none";
+    
+    alert(`Quest Added: ${name}! +50 LP to ${vibe}`);
+}
+
+// Close popup if user clicks outside the white box
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
