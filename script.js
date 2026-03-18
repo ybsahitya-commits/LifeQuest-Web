@@ -86,10 +86,10 @@ document.getElementById('quest-btn').onclick = () => {
     renderCategories();
 };
 
-// --- Render Category Cards ---
+// --- RENDER CATEGORY CARDS ---
 function renderCategories() {
     const list = document.getElementById('category-list');
-    list.innerHTML = ''; // Clear current list
+    list.innerHTML = ''; 
 
     categories.forEach(cat => {
         const card = document.createElement('div');
@@ -97,33 +97,57 @@ function renderCategories() {
         card.innerHTML = `
             <div class="category-header">
                 <span class="category-name">${cat}</span>
-                <button class="add-task-btn" onclick="addNewTask('${cat}')">
-                    <span style="border: 2px solid; border-radius: 50%; width: 18px; height: 18px; display: inline-block;">+</span> 
-                    Add Task
+                <button class="add-task-btn" onclick="showInput('${cat}')">
+                    <span class="plus-circle">+</span> Add Task
                 </button>
             </div>
+            <div id="input-area-${cat}"></div>
             <div id="tasks-${cat}"></div>
         `;
         list.appendChild(card);
     });
+
+    // Add the Clear Button at the bottom
+    const clearBtn = document.createElement('button');
+    clearBtn.className = 'clear-btn';
+    clearBtn.innerText = 'Clear Finished Tasks';
+    clearBtn.onclick = clearFinished;
+    list.appendChild(clearBtn);
 }
 
-function addNewTask(cat) {
-    const taskName = prompt(`Enter a ${cat} task:`); // Simple for now, like Pomofocus
-    if (!taskName) return;
-
-    const taskList = document.getElementById(`tasks-${cat}`);
-    const taskDiv = document.createElement('div');
-    taskDiv.className = 'task-item';
-    taskDiv.innerHTML = `
-        <div class="task-dot" onclick="completeTask(this, '${cat}')"></div>
-        <span>${taskName}</span>
-    `;
-    taskList.appendChild(taskDiv);
+function showInput(cat) {
+    const area = document.getElementById(`input-area-${cat}`);
+    area.innerHTML = `<input type="text" class="inline-input" placeholder="Type and press Enter..." onkeydown="handleKey(event, '${cat}')">`;
+    area.querySelector('input').focus();
 }
 
-function completeTask(el, cat) {
-    el.parentElement.style.textDecoration = "line-through";
-    el.parentElement.style.opacity = "0.5";
-    addLP(50, cat); // Use your existing LP function!
+function handleKey(e, cat) {
+    if (e.key === 'Enter' && e.target.value !== "") {
+        const taskList = document.getElementById(`tasks-${cat}`);
+        const taskDiv = document.createElement('div');
+        taskDiv.className = 'task-item';
+        taskDiv.innerHTML = `
+            <div class="task-dot" onclick="completeTask(this, '${cat}')"></div>
+            <span>${e.target.value}</span>
+        `;
+        taskList.appendChild(taskDiv);
+        e.target.value = ""; // Clear input
+    }
+}
+
+function completeTask(dot, cat) {
+    dot.classList.toggle('filled');
+    const text = dot.nextElementSibling;
+    text.style.textDecoration = dot.classList.contains('filled') ? "line-through" : "none";
+    
+    if (dot.classList.contains('filled')) {
+        addLP(50, cat);
+    }
+}
+
+function clearFinished() {
+    const finishedItems = document.querySelectorAll('.task-dot.filled');
+    finishedItems.forEach(dot => {
+        dot.parentElement.remove();
+    });
 }
