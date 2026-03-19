@@ -5,25 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LifeQuest</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="setup-overlay" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Welcome to LifeQuest</h2>
+            <p>When is your birthday?</p>
+            <input type="date" id="birthdate-input">
+            <button id="start-btn" class="clear-btn" style="background: var(--accent-lavender); color: white;">Start My Journey</button>
+        </div>
+    </div>
+
     <div class="app-container">
-        
         <div id="home-view">
             <header>
                 <div class="user-info">
-                    <span id="life-age">Age 16</span>
-                    <span id="active-mode" class="badge">The Deep Diver</span>
+                    <span id="life-age">Calculating...</span>
+                    <span id="active-mode" class="badge">Level 1: Seedling 🌱</span>
                 </div>
                 <div class="lp-container">
                     <span class="lp-label">LP</span>
-                    <div class="lp-bar-bg">
-                        <div id="lp-bar-fill" style="width: 0%;"></div>
-                    </div>
+                    <div class="lp-bar-bg"><div id="lp-bar-fill" style="width: 0%;"></div></div>
                 </div>
             </header>
-
             <main class="character-space">
                 <img src="https://via.placeholder.com/200x250?text=Marshmallow+Human" alt="Character" id="main-character">
             </main>
@@ -32,38 +37,34 @@
         <div id="quests-view" style="display: none;">
             <h1 class="view-title">Quests</h1>
             <p class="section-subtitle">Daily Tasks</p>
-            
             <div id="category-list"></div>
-
             <div class="life-quests-section">
                 <h2 class="view-title">Life Quests</h2>
-                <div class="category-card">
-                    <p style="color: #aaa; font-style: italic;">No life quests available yet...</p>
-                </div>
+                <div class="category-card"><p style="color: #ccc;">Coming soon...</p></div>
             </div>
         </div>
 
         <div id="focus-view" style="display: none;">
-                <h1 class="view-title">Focus</h1>
-                <p class="section-subtitle">Deep Work Session</p>
-    
-                <div class="timer-container">
-                    <h2 id="timer-display">25:00</h2>
-                    <div class="timer-controls">
-                        <button id="start-stop-btn" class="control-btn">Start Session</button>
-                    </div>
-                    <p style="color: #999; font-size: 0.9rem;">Finish to earn +100 LP</p>
+            <div class="timer-container">
+                <img src="https://via.placeholder.com/100x120?text=Working..." class="focus-character-small">
+                <input type="text" class="focus-task-input" placeholder="What are we focusing on?">
+                <div class="timer-settings">
+                    <button id="mode-down" class="mode-toggle active">Count Down</button>
+                    <button id="mode-up" class="mode-toggle">Count Up</button>
+                    <input type="number" id="custom-time" class="time-input-small" value="25"> <span>min</span>
                 </div>
+                <h2 id="timer-display">25:00</h2>
+                <button id="start-stop-btn" class="control-btn">Start Session</button>
+            </div>
         </div>
+
         <nav class="bottom-nav">
             <button id="home-btn" class="nav-btn active-tab">Home</button>
             <button id="quest-btn" class="nav-btn">Quests</button>
             <button id="focus-btn" class="nav-btn">Focus</button>
             <button id="vacation-toggle" class="nav-btn">🌴</button>
         </nav>
-
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
