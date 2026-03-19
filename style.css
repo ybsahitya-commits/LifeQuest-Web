@@ -1,275 +1,63 @@
-/* --- THE FOUNDATION --- */
 :root {
     --bg-color: #FAF9F6;
     --accent-lavender: #CDB4DB;
     --text-main: #333;
     --lp-color: #A2D2FF;
-    --danger-red: #FF5C5C;
 }
 
-* {
-    box-sizing: border-box; /* Makes padding easier to manage */
+* { box-sizing: border-box; }
+body, html { 
+    margin: 0; padding: 0; height: 100%; width: 100%; 
+    overflow: hidden; font-family: 'Inter', sans-serif; 
+    background-color: #ddd; display: flex; justify-content: center; align-items: center;
 }
 
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    overflow: hidden; /* Stops the whole browser window from scrolling */
-    font-family: 'Inter', -apple-system, sans-serif;
-    background-color: #E5E5E5; /* Subtle background for the phone "shell" */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* --- THE PHONE CONTAINER --- */
 .app-container {
-    width: 375px; /* Standard Mobile Width */
-    height: 667px; /* Standard Mobile Height */
-    background: white;
-    border-radius: 40px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-    overflow: hidden;
+    width: 375px; height: 667px; background: white; border-radius: 40px;
+    position: relative; display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
 }
 
-/* --- SCROLLABLE CONTENT AREAS --- */
 #home-view, #quests-view, #focus-view {
-    flex: 1; 
-    overflow-y: auto; /* This allows the quests to scroll */
-    padding: 25px;
-    padding-bottom: 100px; /* Essential space so the Nav doesn't cover tasks */
-    scrollbar-width: none; /* Hides scrollbar on Firefox */
+    flex: 1; overflow-y: auto; padding: 25px; padding-bottom: 90px;
 }
 
-#home-view::-webkit-scrollbar, #quests-view::-webkit-scrollbar {
-    display: none; /* Hides scrollbar on Chrome/Safari */
-}
+#home-view::-webkit-scrollbar, #quests-view::-webkit-scrollbar { display: none; }
 
-/* --- HEADERS & TEXT --- */
-.view-title {
-    font-size: 2.2rem;
-    margin: 10px 0 5px 0;
-    font-weight: 800;
-}
+/* Headers & UI */
+.user-info { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.1rem; }
+.badge { background: var(--accent-lavender); padding: 5px 12px; border-radius: 20px; color: white; font-size: 0.7rem; }
+.lp-bar-bg { background: #eee; height: 10px; border-radius: 5px; width: 100%; margin: 10px 0; overflow: hidden; }
+#lp-bar-fill { background: var(--lp-color); height: 100%; transition: width 0.5s ease; }
+.view-title { font-size: 2rem; margin: 0; }
+.section-subtitle { color: #aaa; font-weight: bold; font-size: 0.8rem; margin-bottom: 20px; }
 
-.section-subtitle {
-    font-weight: 700;
-    color: #AAA;
-    margin-bottom: 25px;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-}
+/* Cards & Tasks */
+.category-card { background: #fff; border: 2px solid #f5f5f5; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+.category-header { display: flex; justify-content: space-between; align-items: center; }
+.add-task-btn { background: none; border: none; color: var(--accent-lavender); font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.plus-circle { width: 20px; height: 20px; border: 2px solid var(--accent-lavender); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.inline-input { width: 100%; border: none; border-bottom: 1px solid #eee; padding: 8px; outline: none; }
+.task-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+.task-dot { width: 18px; height: 18px; border: 2px solid var(--accent-lavender); border-radius: 50%; cursor: pointer; }
+.task-dot.filled { background: var(--accent-lavender); }
+.clear-btn { width: 100%; padding: 12px; border: none; border-radius: 15px; background: #fff0f0; color: #ff5c5c; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-/* --- CATEGORY CARDS --- */
-.category-card {
-    background: #FFF;
-    border: 1.5px solid #F1F1F1;
-    border-radius: 22px;
-    padding: 18px;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-}
+/* Timer */
+.timer-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+.focus-character-small { width: 80px; margin-bottom: 15px; }
+.focus-task-input { width: 100%; border: none; border-bottom: 2px solid #eee; text-align: center; font-size: 1.2rem; padding: 10px; margin-bottom: 15px; outline: none; }
+.timer-settings { display: flex; gap: 8px; align-items: center; margin-bottom: 15px; font-size: 0.8rem; }
+.mode-toggle { border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+.mode-toggle.active { background: var(--accent-lavender); color: white; }
+#timer-display { font-size: 4rem; margin: 10px 0; }
+.control-btn { background: var(--accent-lavender); color: white; border: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; cursor: pointer; }
 
-.category-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
+/* Navigation */
+.bottom-nav { position: absolute; bottom: 0; width: 100%; height: 80px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; }
+.nav-btn { border: none; background: none; color: #ccc; font-weight: bold; cursor: pointer; }
+.nav-btn.active-tab { color: var(--accent-lavender); }
 
-.category-name {
-    font-weight: 700;
-    text-transform: capitalize;
-    font-size: 1.1rem;
-}
-
-/* --- ADD TASK BUTTON & PLUS CIRCLE --- */
-.add-task-btn {
-    background: none;
-    border: none;
-    color: var(--accent-lavender);
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0;
-}
-
-.plus-circle {
-    width: 22px;
-    height: 22px;
-    border: 2px solid var(--accent-lavender);
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 1; /* Centers the plus vertically */
-}
-
-/* --- INLINE INPUT --- */
-.inline-input {
-    width: 100%;
-    border: none;
-    border-bottom: 2px solid #EEE;
-    padding: 10px 0;
-    margin: 10px 0;
-    outline: none;
-    font-size: 1rem;
-    font-family: inherit;
-}
-
-/* --- TASKS --- */
-.task-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    transition: opacity 0.3s ease;
-}
-
-.task-dot {
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--accent-lavender);
-    border-radius: 50%;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background-color 0.2s ease;
-}
-
-.task-dot.filled {
-    background-color: var(--accent-lavender);
-    position: relative;
-}
-
-/* Add a tiny checkmark inside the dot when filled (Optional) */
-.task-dot.filled::after {
-    content: '';
-    position: absolute;
-    width: 4px; height: 8px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-    left: 6px; top: 2px;
-}
-
-/* --- CLEAR BUTTON --- */
-.clear-btn {
-    width: 100%;
-    padding: 14px;
-    background: #FFF0F0;
-    color: var(--danger-red);
-    border: none;
-    border-radius: 15px;
-    font-weight: 700;
-    margin: 20px 0;
-    cursor: pointer;
-    transition: transform 0.1s active;
-}
-
-.clear-btn:active {
-    transform: scale(0.98);
-}
-
-/* --- STICKY NAVIGATION --- */
-.bottom-nav {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 85px;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(10px); /* iPhone style glass look */
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-top: 1px solid #F0F0F0;
-    padding-bottom: 10px; /* Space for the "home" swipe bar on newer phones */
-}
-
-.nav-btn {
-    border: none;
-    background: none;
-    font-weight: 600;
-    color: #BBB; /* Grey for inactive */
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: color 0.3s ease;
-}
-
-.nav-btn.active-tab {
-    color: var(--accent-lavender); /* Purple for Active */
-}
-
-/* --- LP BAR & BADGES --- */
-.badge {
-    background: var(--accent-lavender);
-    padding: 6px 14px;
-    border-radius: 20px;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: bold;
-}
-
-.lp-bar-bg {
-    background: #F0F0F0;
-    height: 10px;
-    border-radius: 5px;
-    width: 100%;
-    margin-top: 8px;
-    overflow: hidden;
-}
-
-#lp-bar-fill {
-    background: var(--lp-color);
-    height: 100%;
-    transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-/* --- FOCUS TIMER STYLES --- */
-.timer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    gap: 20px;
-}
-
-#timer-display {
-    font-size: 5rem;
-    font-weight: 800;
-    color: var(--text-main);
-    margin: 0;
-}
-
-.timer-controls {
-    display: flex;
-    gap: 15px;
-}
-
-.control-btn {
-    padding: 12px 25px;
-    border-radius: 15px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.1s;
-}
-
-#start-stop-btn {
-    background-color: var(--accent-lavender);
-    color: white;
-}
-
-#reset-timer-btn {
-    background-color: #eee;
-    color: #666;
-}
+/* Setup Modal */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; display: flex; justify-content: center; align-items: center; }
+.modal-content { background: white; padding: 30px; border-radius: 30px; text-align: center; width: 300px; }
