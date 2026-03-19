@@ -139,3 +139,67 @@ function updateHomeUI() {
 
 // Initialize on Load
 updateHomeUI();
+// --- 5. FOCUS TIMER LOGIC ---
+let timerInterval = null;
+let timeLeft = 25 * 60; // 25 minutes in seconds
+
+const timerDisplay = document.getElementById('timer-display');
+const startStopBtn = document.getElementById('start-stop-btn');
+
+function updateTimerDisplay() {
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    timerDisplay.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+function toggleTimer() {
+    if (timerInterval) {
+        // STOP THE TIMER
+        clearInterval(timerInterval);
+        timerInterval = null;
+        startStopBtn.innerText = "Start Session";
+        startStopBtn.style.backgroundColor = "var(--accent-lavender)";
+    } else {
+        // START THE TIMER
+        startStopBtn.innerText = "Pause";
+        startStopBtn.style.backgroundColor = "#FFB7B2"; // Soft red for pause
+        
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                timeLeft = 25 * 60; // Reset
+                updateTimerDisplay();
+                
+                // REWARD: Give 100 LP for a full session!
+                addLP(100, 'focus'); 
+                alert("Session Complete! +100 Focus LP earned.");
+                startStopBtn.innerText = "Start Session";
+            }
+        }, 1000);
+    }
+}
+
+// Attach the button to the function
+if (startStopBtn) {
+    startStopBtn.onclick = toggleTimer;
+}
+
+// Make sure the "Focus" button in the nav shows the view
+document.getElementById('focus-btn').onclick = () => {
+    showView('focus');
+};
+
+// Add to your showView function to handle the Focus view
+function showView(viewName) {
+    document.getElementById('home-view').style.display = viewName === 'home' ? 'block' : 'none';
+    document.getElementById('quests-view').style.display = viewName === 'quests' ? 'block' : 'none';
+    document.getElementById('focus-view').style.display = viewName === 'focus' ? 'block' : 'none'; // ADD THIS
+    
+    document.getElementById('home-btn').classList.toggle('active-tab', viewName === 'home');
+    document.getElementById('quest-btn').classList.toggle('active-tab', viewName === 'quests');
+    document.getElementById('focus-btn').classList.toggle('active-tab', viewName === 'focus'); // ADD THIS
+}
