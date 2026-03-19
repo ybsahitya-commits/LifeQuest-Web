@@ -1,8 +1,6 @@
-// --- 1. INITIAL DATA & STORAGE ---
-// This checks if you have saved data in the browser "vault". 
-// If not, it starts with a clean slate.
+// --- 1. DATA & INITIALIZATION ---
 let userData = JSON.parse(localStorage.getItem('lifeQuestData')) || {
-    age: 16,
+    birthday: null,
     lp: 0,
     isVacation: false,
     vibePoints: { focus: 0, presence: 0, energy: 0, grit: 0 },
@@ -11,195 +9,144 @@ let userData = JSON.parse(localStorage.getItem('lifeQuestData')) || {
 
 const categories = ['grit', 'focus', 'energy', 'presence'];
 
-// Function to save everything to the browser's hard drive
 function saveData() {
     localStorage.setItem('lifeQuestData', JSON.stringify(userData));
 }
 
-// --- 2. NAVIGATION LOGIC ---
+// Age Calculation
+function calculateAge(birthdate) {
+    const diff = Date.now() - new Date(birthdate).getTime();
+    return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+}
+
+// First Time Setup
+if (!userData.birthday) {
+    document.getElementById('setup-overlay').style.display = 'flex';
+}
+
+document.getElementById('start-btn').onclick = () => {
+    const bday = document.getElementById('birthdate-input').value;
+    if (bday) {
+        userData.birthday = bday;
+        saveData();
+        document.getElementById('setup-overlay').style.display = 'none';
+        updateHomeUI();
+    }
+};
+
+// --- 2. NAVIGATION ---
 function showView(viewName) {
-    document.getElementById('home-view').style.display = viewName === 'home' ? 'block' : 'none';
-    document.getElementById('quests-view').style.display = viewName === 'quests' ? 'block' : 'none';
-    
-    // Update Nav Colors (Purple for active)
-    document.getElementById('home-btn').classList.toggle('active-tab', viewName === 'home');
-    document.getElementById('quest-btn').classList.toggle('active-tab', viewName === 'quests');
-    
+    ['home', 'quests', 'focus'].forEach(v => {
+        document.getElementById(`${v}-view`).style.display = (v === viewName) ? 'block' : 'none';
+        document.getElementById(`${v}-btn`).classList.toggle('active-tab', v === viewName);
+    });
     if (viewName === 'quests') renderCategories();
     if (viewName === 'home') updateHomeUI();
 }
 
 document.getElementById('home-btn').onclick = () => showView('home');
 document.getElementById('quest-btn').onclick = () => showView('quests');
+document.getElementById('focus-btn').onclick = () => showView('focus');
 
-// --- 3. QUEST & TASK LOGIC ---
+// --- 3. QUEST LOGIC ---
 function renderCategories() {
     const list = document.getElementById('category-list');
-    list.innerHTML = ''; 
-
+    list.innerHTML = '';
     categories.forEach(cat => {
         const card = document.createElement('div');
         card.className = 'category-card';
         card.innerHTML = `
             <div class="category-header">
                 <span class="category-name">${cat}</span>
-                <button class="add-task-btn" onclick="showInput('${cat}')">
-                    <span class="plus-circle">+</span> Add Task
-                </button>
+                <button class="add-task-btn" onclick="showInput('${cat}')"><span class="plus-circle">+</span> Add Task</button>
             </div>
             <div id="input-area-${cat}"></div>
-            <div id="tasks-${cat}"></div>
-        `;
+            <div id="tasks-${cat}">${renderTasks(cat)}</div>`;
         list.appendChild(card);
-
-        const taskList = document.getElementById(`tasks-${cat}`);
-        userData.userTasks[cat].forEach((task, index) => {
-            const taskDiv = document.createElement('div');
-            taskDiv.className = 'task-item';
-            if (task.completed) taskDiv.style.opacity = "0.5";
-            
-            taskDiv.innerHTML = `
-                <div class="task-dot ${task.completed ? 'filled' : ''}" 
-                     onclick="completeTask(${index}, '${cat}')"></div>
-                <span style="text-decoration: ${task.completed ? 'line-through' : 'none'}">
-                    ${task.text}
-                </span>
-            `;
-            taskList.appendChild(taskDiv);
-        });
     });
+    const cb = document.createElement('button');
+    cb.className = 'clear-btn'; cb.innerText = 'Clear Finished'; cb.onclick = clearFinished;
+    list.appendChild(cb);
+}
 
-    const clearBtn = document.createElement('button');
-    clearBtn.className = 'clear-btn';
-    clearBtn.innerText = 'Clear Finished Tasks';
-    clearBtn.onclick = clearFinished;
-    list.appendChild(clearBtn);
+function renderTasks(cat) {
+    return userData.userTasks[cat].map((t, i) => `
+        <div class="task-item" style="opacity: ${t.completed ? 0.5 : 1}">
+            <div class="task-dot ${t.completed ? 'filled' : ''}" onclick="completeTask(${i}, '${cat}')"></div>
+            <span style="text-decoration: ${t.completed ? 'line-through' : 'none'}">${t.text}</span>
+        </div>`).join('');
 }
 
 function showInput(cat) {
-    const area = document.getElementById(`input-area-${cat}`);
-    area.innerHTML = `<input type="text" class="inline-input" placeholder="Type and press Enter..." onkeydown="handleKey(event, '${cat}')">`;
-    area.querySelector('input').focus();
+    document.getElementById(`input-area-${cat}`).innerHTML = `<input type="text" class="inline-input" onkeydown="handleKey(event, '${cat}')">`;
+    document.getElementById(`input-area-${cat}`).querySelector('input').focus();
 }
 
 function handleKey(e, cat) {
     if (e.key === 'Enter' && e.target.value !== "") {
         userData.userTasks[cat].push({ text: e.target.value, completed: false });
-        e.target.value = ""; 
-        saveData();
-        renderCategories();
+        saveData(); renderCategories();
     }
 }
 
-function completeTask(index, cat) {
-    const task = userData.userTasks[cat][index];
-    if (!task.completed) {
-        addLP(50, cat);
-    }
-    task.completed = !task.completed;
-    saveData();
-    renderCategories();
+function completeTask(i, cat) {
+    const t = userData.userTasks[cat][i];
+    if (!t.completed) addLP(50, cat);
+    t.completed = !t.completed;
+    saveData(); renderCategories();
 }
 
 function clearFinished() {
-    categories.forEach(cat => {
-        userData.userTasks[cat] = userData.userTasks[cat].filter(t => !t.completed);
-    });
-    saveData();
-    renderCategories();
+    categories.forEach(c => userData.userTasks[c] = userData.userTasks[c].filter(t => !t.completed));
+    saveData(); renderCategories();
 }
 
-// --- 4. CORE ENGINE (LP & UI) ---
-function addLP(amount, category) {
-    if (userData.isVacation) return;
-    userData.lp += amount;
-    userData.vibePoints[category] += amount;
-    saveData();
-    updateHomeUI();
+// --- 4. TIMER LOGIC ---
+let timerInt = null, timerMode = 'down', secsElapsed = 0, targetSecs = 1500;
+
+document.getElementById('mode-down').onclick = () => setTimerMode('down');
+document.getElementById('mode-up').onclick = () => setTimerMode('up');
+
+function setTimerMode(m) {
+    timerMode = m;
+    document.getElementById('mode-down').classList.toggle('active', m === 'down');
+    document.getElementById('mode-up').classList.toggle('active', m === 'up');
+    updateTimerDisplay();
 }
-
-function updateHomeUI() {
-    // Update LP Bar
-    const bar = document.getElementById('lp-bar-fill');
-    if (bar) {
-        let progress = (userData.lp % 1000) / 10;
-        bar.style.width = progress + "%";
-    }
-    
-    // Update Archetype
-    const vibes = userData.vibePoints;
-    let highestVibe = 'focus';
-    for (let v in vibes) {
-        if (vibes[v] > vibes[highestVibe]) highestVibe = v;
-    }
-    const modeDisplay = document.getElementById('active-mode');
-    const archetypes = { focus: "Deep Diver", presence: "Social Lead", energy: "Peak Performer", grit: "Hard-Liner" };
-    if (modeDisplay) modeDisplay.innerText = archetypes[highestVibe];
-}
-
-// Initialize on Load
-updateHomeUI();
-// --- 5. FOCUS TIMER LOGIC ---
-let timerInterval = null;
-let timeLeft = 25 * 60; // 25 minutes in seconds
-
-const timerDisplay = document.getElementById('timer-display');
-const startStopBtn = document.getElementById('start-stop-btn');
 
 function updateTimerDisplay() {
-    const mins = Math.floor(timeLeft / 60);
-    const secs = timeLeft % 60;
-    timerDisplay.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    let s = timerMode === 'down' ? Math.max(0, targetSecs - secsElapsed) : secsElapsed;
+    document.getElementById('timer-display').innerText = `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
 }
 
-function toggleTimer() {
-    if (timerInterval) {
-        // STOP THE TIMER
-        clearInterval(timerInterval);
-        timerInterval = null;
-        startStopBtn.innerText = "Start Session";
-        startStopBtn.style.backgroundColor = "var(--accent-lavender)";
+document.getElementById('start-stop-btn').onclick = function() {
+    if (timerInt) {
+        clearInterval(timerInt); timerInt = null; this.innerText = "Start";
+        if (timerMode === 'up' && secsElapsed > 60) addLP(Math.floor(secsElapsed/60)*2, 'focus');
     } else {
-        // START THE TIMER
-        startStopBtn.innerText = "Pause";
-        startStopBtn.style.backgroundColor = "#FFB7B2"; // Soft red for pause
-        
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            updateTimerDisplay();
-
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                timeLeft = 25 * 60; // Reset
-                updateTimerDisplay();
-                
-                // REWARD: Give 100 LP for a full session!
-                addLP(100, 'focus'); 
-                alert("Session Complete! +100 Focus LP earned.");
-                startStopBtn.innerText = "Start Session";
+        if (timerMode === 'down') { targetSecs = document.getElementById('custom-time').value * 60; secsElapsed = 0; }
+        this.innerText = "Pause";
+        timerInt = setInterval(() => {
+            secsElapsed++; updateTimerDisplay();
+            if (timerMode === 'down' && secsElapsed >= targetSecs) {
+                clearInterval(timerInt); timerInt = null; addLP(100, 'focus'); alert("Focus Complete!"); this.innerText = "Start";
             }
         }, 1000);
     }
-}
-
-// Attach the button to the function
-if (startStopBtn) {
-    startStopBtn.onclick = toggleTimer;
-}
-
-// Make sure the "Focus" button in the nav shows the view
-document.getElementById('focus-btn').onclick = () => {
-    showView('focus');
 };
 
-// Add to your showView function to handle the Focus view
-function showView(viewName) {
-    document.getElementById('home-view').style.display = viewName === 'home' ? 'block' : 'none';
-    document.getElementById('quests-view').style.display = viewName === 'quests' ? 'block' : 'none';
-    document.getElementById('focus-view').style.display = viewName === 'focus' ? 'block' : 'none'; // ADD THIS
-    
-    document.getElementById('home-btn').classList.toggle('active-tab', viewName === 'home');
-    document.getElementById('quest-btn').classList.toggle('active-tab', viewName === 'quests');
-    document.getElementById('focus-btn').classList.toggle('active-tab', viewName === 'focus'); // ADD THIS
+// --- 5. UI UPDATES ---
+function addLP(amt, cat) {
+    if (userData.isVacation) return;
+    userData.lp += amt; userData.vibePoints[cat] += amt; saveData(); updateHomeUI();
 }
+
+function updateHomeUI() {
+    const level = Math.floor(userData.lp / 1000) + 1;
+    const titles = ["Seedling 🌱", "Sprout 🌿", "Sapling 🌳", "Guardian 🛡️", "Ancient Oak 👑"];
+    document.getElementById('active-mode').innerText = `Lvl ${level}: ${titles[level-1] || titles[4]}`;
+    document.getElementById('lp-bar-fill').style.width = (userData.lp % 1000) / 10 + "%";
+    if (userData.birthday) document.getElementById('life-age').innerText = `Age ${calculateAge(userData.birthday)}`;
+}
+
+updateHomeUI();
