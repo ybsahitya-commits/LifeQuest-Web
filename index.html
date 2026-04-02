@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeQuest Pro</title>
+    <title>LifeQuest</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
@@ -13,19 +13,18 @@
             <h2>Welcome</h2>
             <p>Enter your birthday to begin:</p>
             <input type="date" id="birthdate-input">
-            <button id="start-btn" class="save-btn">Start Journey</button>
+            <button id="start-btn" class="control-btn">Start Journey</button>
         </div>
     </div>
 
     <div class="app-container">
-        <div id="home-view">
+        <div id="home-view" class="view">
             <header>
                 <div class="user-info">
                     <span id="life-age">Age --</span>
                     <span id="active-mode" class="badge">Level 1: Seedling 🌱</span>
                 </div>
                 <div class="lp-container">
-                    <span class="lp-label">LP</span>
                     <div class="lp-bar-bg"><div id="lp-bar-fill" style="width: 0%;"></div></div>
                 </div>
             </header>
@@ -34,27 +33,25 @@
             </main>
         </div>
 
-        <div id="quests-view" style="display: none;">
+        <div id="quests-view" class="view" style="display: none;">
             <h1 class="view-title">Quests</h1>
             <p class="section-subtitle">Daily Tasks</p>
             <div id="category-list"></div>
-            <h2 class="view-title" style="margin-top:20px;">Life Quests</h2>
-            <div class="category-card"><p style="color:#ccc">Locked until Level 5</p></div>
+            
+            <h1 class="view-title" style="margin-top: 30px;">Life Quests</h1>
+            <div class="category-card"><p style="color:#ccc; text-align:center;">Locked until Level 5</p></div>
         </div>
 
-        <div id="focus-view" style="display: none;">
+        <div id="focus-view" class="view" style="display: none;">
             <div class="timer-container">
-                <img src="https://via.placeholder.com/80x100?text=Working" class="focus-char">
                 <input type="text" class="focus-task-input" placeholder="What are we doing?">
-                
                 <div class="circular-timer">
-                    <svg class="progress-ring" width="200" height="200">
-                        <circle class="progress-ring__circle-bg" stroke="#eee" stroke-width="8" fill="transparent" r="90" cx="100" cy="100"/>
-                        <circle class="progress-ring__circle" id="timer-ring" stroke="#CDB4DB" stroke-width="8" fill="transparent" r="90" cx="100" cy="100"/>
+                    <svg width="200" height="200">
+                        <circle class="ring-bg" cx="100" cy="100" r="90"></circle>
+                        <circle id="timer-ring" class="ring-progress" cx="100" cy="100" r="90"></circle>
                     </svg>
                     <div id="timer-display">30:00</div>
                 </div>
-
                 <div class="timer-settings">
                     <button id="mode-down" class="mode-toggle active">Down</button>
                     <button id="mode-up" class="mode-toggle">Up</button>
