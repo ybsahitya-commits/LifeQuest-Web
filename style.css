@@ -1,35 +1,41 @@
 :root { --lavender: #CDB4DB; --blue: #A2D2FF; --text: #333; }
 * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-body { margin: 0; height: 100vh; background: #f0f0f0; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+
+body { 
+    margin: 0; height: 100vh; background: #f0f0f0; 
+    display: flex; justify-content: center; align-items: center; overflow: hidden; 
+}
 
 .app-container { 
     width: 375px; height: 667px; background: white; border-radius: 40px; 
-    position: relative; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    position: relative; display: flex; flex-direction: column; overflow: hidden; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
 }
 
-.view { flex: 1; overflow-y: auto; padding: 25px; padding-bottom: 90px; }
+.view { flex: 1; overflow-y: auto; padding: 25px; padding-bottom: 100px; }
 .view::-webkit-scrollbar { display: none; }
 
-/* Headers */
+/* Header UI */
 .user-info { display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 5px; }
 .badge { background: var(--lavender); padding: 5px 12px; border-radius: 20px; color: white; font-size: 0.7rem; }
-.lp-bar-bg { background: #f0f0f0; height: 12px; border-radius: 10px; overflow: hidden; }
-#lp-bar-fill { background: var(--blue); height: 100%; transition: width 0.5s; width: 0%; }
+.lp-bar-bg { background: #f0f0f0; height: 12px; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+#lp-bar-fill { background: var(--blue); height: 100%; width: 0%; transition: width 0.5s ease; }
 
-/* Quests */
+/* Quests & Cards */
 .view-title { font-size: 2.2rem; margin: 0; font-weight: 800; }
 .section-subtitle { color: #aaa; font-weight: bold; font-size: 0.9rem; margin-bottom: 20px; }
-.category-card { background: #fff; border: 2px solid #f0f0f0; border-radius: 25px; padding: 18px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-.category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.add-task-btn { background: none; border: none; color: var(--lavender); font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-.plus-circle { width: 22px; height: 22px; border: 2px solid var(--lavender); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.category-card { background: #fff; border: 2px solid #f0f0f0; border-radius: 25px; padding: 18px; margin-bottom: 15px; }
+.category-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; text-transform: capitalize; }
+
+.add-task-btn { background: none; border: none; color: var(--lavender); font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 0; }
+.plus-circle { width: 22px; height: 22px; border: 2px solid var(--lavender); border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 1; }
 
 .task-item { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
-.task-dot { width: 22px; height: 22px; border: 2px solid var(--lavender); border-radius: 50%; cursor: pointer; transition: 0.2s; }
+.task-dot { width: 22px; height: 22px; border: 2px solid var(--lavender); border-radius: 50%; cursor: pointer; flex-shrink: 0; }
 .task-dot.filled { background: var(--lavender); }
 .inline-input { width: 100%; border: none; border-bottom: 2px solid #f0f0f0; padding: 8px 0; outline: none; margin: 10px 0; font-size: 1rem; }
 
-/* Timer */
+/* Circular Timer */
 .timer-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
 .circular-timer { position: relative; width: 200px; height: 200px; margin: 20px 0; }
 #timer-display { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2.5rem; font-weight: 800; }
@@ -37,12 +43,8 @@ svg { transform: rotate(-90deg); }
 .ring-bg { fill: none; stroke: #eee; stroke-width: 10; }
 .ring-progress { fill: none; stroke: var(--lavender); stroke-width: 10; stroke-linecap: round; stroke-dasharray: 565.48; stroke-dashoffset: 0; transition: stroke-dashoffset 0.3s linear; }
 
+/* Buttons & Nav */
 .control-btn { background: var(--lavender); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-.mode-toggle { border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; background: #eee; margin: 0 5px; }
-.mode-toggle.active { background: var(--lavender); color: white; }
-.focus-task-input { border: none; border-bottom: 2px solid #eee; text-align: center; width: 80%; font-size: 1.2rem; outline: none; margin-bottom: 20px; }
-
-/* Nav */
 .bottom-nav { position: absolute; bottom: 0; width: 100%; height: 85px; background: white; border-top: 1px solid #f0f0f0; display: flex; justify-content: space-around; align-items: center; }
 .nav-btn { border: none; background: none; color: #ccc; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
 .nav-btn.active-tab { color: var(--lavender); }
