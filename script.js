@@ -1,16 +1,13 @@
-// --- 1. DATA STORAGE ---
 let userData = JSON.parse(localStorage.getItem('lifeQuestData')) || {
     birthday: null, lp: 0, 
     userTasks: { grit: [], focus: [], energy: [], presence: [] }
 };
 
 const categories = ['grit', 'focus', 'energy', 'presence'];
-const ring = document.getElementById('timer-ring');
-const circumference = 2 * Math.PI * 90;
 
 function saveData() { localStorage.setItem('lifeQuestData', JSON.stringify(userData)); }
 
-// --- 2. INITIALIZATION & AGE ---
+// Initialize
 if (!userData.birthday) {
     document.getElementById('setup-overlay').style.display = 'flex';
 } else {
@@ -27,12 +24,7 @@ document.getElementById('start-btn').onclick = () => {
     }
 };
 
-function getAge(dob) {
-    const diff = Date.now() - new Date(dob).getTime();
-    return Math.floor(diff / 31557600000);
-}
-
-// --- 3. NAVIGATION ---
+// Navigation
 function showView(view) {
     document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-tab'));
@@ -48,10 +40,10 @@ document.getElementById('home-btn').onclick = () => showView('home');
 document.getElementById('quest-btn').onclick = () => showView('quests');
 document.getElementById('focus-btn').onclick = () => showView('focus');
 
-// --- 4. QUEST SYSTEM ---
+// --- THE DAILY TASKS CODE ---
 function renderQuests() {
     const list = document.getElementById('category-list');
-    list.innerHTML = ''; 
+    list.innerHTML = ''; // Clear existing cards
 
     categories.forEach(cat => {
         const card = document.createElement('div');
@@ -75,12 +67,6 @@ function renderQuests() {
         `;
         list.appendChild(card);
     });
-
-    const clearBtn = document.createElement('button');
-    clearBtn.className = 'control-btn'; clearBtn.style.width = "100%"; 
-    clearBtn.innerText = 'Clear Finished Tasks'; 
-    clearBtn.onclick = clearTasks;
-    list.appendChild(clearBtn);
 }
 
 function addInLine(cat) {
@@ -93,62 +79,21 @@ function saveTask(e, cat) {
     if (e.key === 'Enter' && e.target.value) {
         userData.userTasks[cat].push({ text: e.target.value, done: false });
         saveData();
-        renderQuests();
+        renderQuests(); // Refresh the list
     }
 }
 
 function toggleTask(i, cat) {
     const t = userData.userTasks[cat][i];
-    if (!t.done) userData.lp += 50; 
+    if (!t.done) {
+        userData.lp += 50; // Award LP
+    }
     t.done = !t.done;
     saveData();
     renderQuests();
     updateUI();
 }
 
-function clearTasks() {
-    categories.forEach(c => userData.userTasks[c] = userData.userTasks[c].filter(t => !t.done));
-    saveData();
-    renderQuests();
-}
-
-// --- 5. TIMER SYSTEM ---
-let timerPtr = null, timerMode = 'down', elapsed = 0, total = 1800; // 30 mins
-
-document.getElementById('mode-down').onclick = () => { timerMode = 'down'; updateClock(); };
-document.getElementById('mode-up').onclick = () => { timerMode = 'up'; updateClock(); };
-
-function updateClock() {
-    let s = timerMode === 'down' ? total - elapsed : elapsed;
-    document.getElementById('timer-display').innerText = `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
-    const offset = circumference - (elapsed / total) * circumference;
-    ring.style.strokeDashoffset = offset;
-}
-
-document.getElementById('start-stop-btn').onclick = function() {
-    if (timerPtr) {
-        clearInterval(timerPtr); timerPtr = null; this.innerText = "Start Session";
-        if (elapsed > 60) {
-            let bonus = Math.floor(Math.random() * 20) + 1;
-            userData.lp += (Math.floor(elapsed/60) + bonus);
-            saveData();
-            updateUI();
-        }
-    } else {
-        this.innerText = "Pause";
-        timerPtr = setInterval(() => {
-            elapsed++; updateClock();
-            if (timerMode === 'down' && elapsed >= total) {
-                clearInterval(timerPtr); timerPtr = null; 
-                userData.lp += 50; saveData(); updateUI();
-                alert("Session Complete!");
-                this.innerText = "Start Session";
-            }
-        }, 1000);
-    }
-};
-
-// --- 6. GLOBAL UI ---
 function updateUI() {
     const lvl = Math.floor(userData.lp / 1000) + 1;
     const titles = ["Seedling 🌱", "Sprout 🌿", "Sapling 🌳", "Guardian 🛡️", "Ancient Oak 👑"];
@@ -156,6 +101,7 @@ function updateUI() {
     document.getElementById('lp-bar-fill').style.width = (userData.lp % 1000) / 10 + "%";
     
     if (userData.birthday) {
-        document.getElementById('life-age').innerText = `Age ${getAge(userData.birthday)}`;
+        const age = Math.floor((Date.now() - new Date(userData.birthday).getTime()) / 31557600000);
+        document.getElementById('life-age').innerText = `Age ${age}`;
     }
 }
