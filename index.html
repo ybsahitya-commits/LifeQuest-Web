@@ -11,7 +11,7 @@
     <div id="setup-overlay" class="modal" style="display: none;">
         <div class="modal-content">
             <h2>Welcome</h2>
-            <p>Enter your birthday to calculate your Age:</p>
+            <p>Enter your birthday:</p>
             <input type="date" id="birthdate-input">
             <button id="start-btn" class="control-btn">Start Journey</button>
         </div>
@@ -34,28 +34,21 @@
         <div id="quests-view" class="view" style="display: none;">
             <h1 class="view-title">Quests</h1>
             <p class="section-subtitle">Daily Tasks</p>
-            
             <div id="category-list"></div>
             
             <h1 class="view-title" style="margin-top: 30px;">Life Quests</h1>
-            <div class="category-card">
-                <p style="color:#ccc; text-align:center; padding: 20px;">Locked until Level 5</p>
-            </div>
+            <div class="category-card"><p style="color:#ccc; text-align:center;">Locked until Level 5</p></div>
         </div>
 
         <div id="focus-view" class="view" style="display: none;">
             <div class="timer-container">
-                <input type="text" class="focus-task-input" placeholder="What are you working on?">
+                <input type="text" class="focus-task-input" placeholder="Current Task...">
                 <div class="circular-timer">
                     <svg width="200" height="200">
                         <circle class="ring-bg" cx="100" cy="100" r="90"></circle>
                         <circle id="timer-ring" class="ring-progress" cx="100" cy="100" r="90"></circle>
                     </svg>
                     <div id="timer-display">30:00</div>
-                </div>
-                <div class="timer-settings">
-                    <button id="mode-down" class="mode-toggle active">Count Down</button>
-                    <button id="mode-up" class="mode-toggle">Count Up</button>
                 </div>
                 <button id="start-stop-btn" class="control-btn">Start Session</button>
             </div>
